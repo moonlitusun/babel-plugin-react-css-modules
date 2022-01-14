@@ -182,6 +182,7 @@ export default ({
               context: stats.opts.context,
               filetypes: stats.opts.filetypes || {},
               generateScopedName: stats.opts.generateScopedName,
+              transform: stats.opts.transform,
             },
           );
 

@@ -102,14 +102,13 @@ export default ({
   };
 
   const addWebpackHotModuleAccept = (path) => {
-    const test =
+    const test = types.memberExpression(
       types.memberExpression(
-        types.memberExpression(
-          types.identifier('import'),
-          types.identifier('meta')
-        ),
-        types.identifier('webpackHot')
-      );
+        types.identifier('import'),
+        types.identifier('meta'),
+      ),
+      types.identifier('webpackHot'),
+    );
     const consequent = types.blockStatement([
       types.expressionStatement(
         types.callExpression(
@@ -117,9 +116,9 @@ export default ({
             types.memberExpression(
               types.memberExpression(
                 types.identifier('import'),
-                types.identifier('meta')
+                types.identifier('meta'),
               ),
-              types.identifier('webpackHot')
+              types.identifier('webpackHot'),
             ),
             types.identifier('accept'),
           ),

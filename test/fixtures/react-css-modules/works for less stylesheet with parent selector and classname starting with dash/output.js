@@ -2,8 +2,8 @@
 
 require("./style.less");
 
-if (module.hot) {
-  module.hot.accept("./style.less", function () {
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept("./style.less", function () {
     require("./style.less");
   });
 }

@@ -90,7 +90,7 @@ const getTokens = (
   runner,
   cssSourceFilePath: string,
   filetypeOptions: ?FiletypeOptionsType,
-  pluginOptions: OptionsType
+  pluginOptions: OptionsType,
 ): StyleModuleMapType => {
   const options: Object = {
     from: cssSourceFilePath,
@@ -103,7 +103,7 @@ const getTokens = (
   let res = readFileSync(cssSourceFilePath, 'utf-8');
 
   if (pluginOptions.transform) {
-    res = pluginOptions.transform(res, cssSourceFilePath, pluginOptions)
+    res = pluginOptions.transform(res, cssSourceFilePath, pluginOptions);
   }
 
   if (extraPluginsRunner) {
@@ -175,7 +175,7 @@ export default (cssSourceFilePath: string, options: OptionsType): StyleModuleMap
       runner,
       toPath,
       filetypeOptions,
-      options
+      options,
     );
   };
 
@@ -198,6 +198,6 @@ export default (cssSourceFilePath: string, options: OptionsType): StyleModuleMap
     runner,
     cssSourceFilePath,
     filetypeOptions,
-    options
+    options,
   );
 };

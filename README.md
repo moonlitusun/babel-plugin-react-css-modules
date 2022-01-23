@@ -278,7 +278,11 @@ you.
 - `attributeNames` - [Custom Attribute Mapping]
 - `skip` - **boolean** - Whether to apply plugin if no matching `attributeNames`
   found in the file. Defaults **false**.
-- `autoResolveMultipleImports` - **boolean** Allow multiple anonymous imports if
+- [transform] - **function** - If provided, each CSS source loaded by
+  the plugin will be passed through this function, alongside its path,
+  and this plugin's options, and the output of this function will be used
+  in place of the original CSS.
+- `autoResolveMultipleImports` - **boolean** - Allows multiple anonymous imports if
   `styleName` is only in one of them. Defaults **true**.
 
 ### Configurate syntax loaders
@@ -333,7 +337,19 @@ two steps:
       ]
     ```
 
-### Custom Attribute Mapping
+### transform
+```
+transform(cssSource, cssSourceFilePath, pluginOptions): string
+```
+The transform function, if provided as the `transform` option of this plugin,
+will be called for each loaded CSS source with three arguments:
+- `cssSource` - **string** - The loaded CSS code.
+- `cssSourceFilePath` - **string** - The path of loaded CSS file.
+- `pluginOptions` - **object** - The options set for this plugin.
+
+It should return a string, the actual CSS code to use.
+
+### Custom Attribute 
 
 You can set your own attribute mapping rules using the `attributeNames` option.
 
@@ -407,7 +423,7 @@ this, consider to spread the word to encourage more users to move to this fork.
 
 | `css-loader` versions   | this plugin versions    |
 | ----------------------- | ----------------------- |
-| `6.5.0` &div; `6.5.1` (latest) | `6.5.1` &div; `6.5.4` (latest)        |
+| `6.5.0` &div; `6.5.1` (latest) | `6.5.1` &div; `6.6.0` (latest)        |
 | `6.4.0`                 | `6.4.0` &div; `6.4.1`   |
 | `6.0.0` &div; `6.3.0`   | `6.2.1` &div; `6.3.1`   |
 | `5.2.5` &div; `5.2.7`   | `6.1.1`                 |
@@ -433,3 +449,4 @@ this, consider to spread the word to encourage more users to move to this fork.
 [Configurate syntax loaders]: #configurate-syntax-loaders
 [Custom Attribute Mapping]: #custom-attribute-mapping
 [`css-loader` compatibility]: #css-loader-compatibility
+[transform]: #transform

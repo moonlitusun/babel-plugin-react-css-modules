@@ -194,13 +194,15 @@ export default function getLocalIdent(
   localName,
   options,
 ) {
-  const { context, hashSalt } = options;
+  const { context, hashSalt, hashStrategy } = options;
   const { resourcePath } = loaderContext;
   const relativeResourcePath = normalizePath(
     path.relative(context, resourcePath),
   );
 
-  const content = `${relativeResourcePath}\u0000${localName}`;
+  const content = hashStrategy === 'minimal-subset'
+    && /\[local\]/.test(localIdentName)
+    ? relativeResourcePath : `${relativeResourcePath}\x00${localName}`;
 
   let { hashFunction, hashDigest, hashDigestLength } = options;
   const matches = localIdentName.match(

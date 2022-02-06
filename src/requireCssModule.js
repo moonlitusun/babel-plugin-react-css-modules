@@ -154,6 +154,12 @@ export default (cssSourceFilePath: string, options: OptionsType): StyleModuleMap
         hashFunction: 'md4',
         hashSalt: '',
 
+        // TODO: This option was introduced by css-loader@6.6.0.
+        // To keep getLocalIdent() in sync with css-loader implementation,
+        // I updated the code there, but similar to the parameters above,
+        // it is not yet exposed as this plugin's option.
+        hashStrategy: 'resource-path-and-local-name',
+
         // TODO: This one allows for some path modifications during
         // the transform. Probably, not a Webpack param.
         regExp: '',

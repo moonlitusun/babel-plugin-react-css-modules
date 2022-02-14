@@ -101,7 +101,54 @@ export default ({
     );
   };
 
-  const addWebpackHotModuleAccept = (path) => {
+  /**
+   * Adds Webpack "hot module accept" code "a-la CommonJS" style,
+   * i.e. using module.hot.
+   * @param {object} path
+   */
+  const addCommonJsWebpackHotModuleAccept = (path) => {
+    const test = types.memberExpression(types.identifier('module'), types.identifier('hot'));
+    const consequent = types.blockStatement([
+      types.expressionStatement(
+        types.callExpression(
+          types.memberExpression(
+            types.memberExpression(types.identifier('module'), types.identifier('hot')),
+            types.identifier('accept'),
+          ),
+          [
+            types.stringLiteral(path.node.source.value),
+            types.functionExpression(null, [], types.blockStatement([
+              types.expressionStatement(
+                types.callExpression(
+                  types.identifier('require'),
+                  [types.stringLiteral(path.node.source.value)],
+                ),
+              ),
+            ])),
+          ],
+        ),
+      ),
+    ]);
+
+    const programPath = path.findParent((parentPath) => parentPath.isProgram());
+
+    const firstNonImportDeclarationNode = programPath.get('body').find((node) => !types.isImportDeclaration(node));
+
+    const hotAcceptStatement = types.ifStatement(test, consequent);
+
+    if (firstNonImportDeclarationNode) {
+      firstNonImportDeclarationNode.insertBefore(hotAcceptStatement);
+    } else {
+      programPath.pushContainer('body', hotAcceptStatement);
+    }
+  };
+
+  /**
+   * Adds Webpack "hot module accept" code "a-la ESM" style,
+   * i.e. using import.meta.webpackHot
+   * @param {object} path
+   */
+  const addEsmWebpackHotModuleAccept = (path) => {
     const test = types.memberExpression(
       types.memberExpression(
         types.identifier('import'),
@@ -186,8 +233,12 @@ export default ({
             },
           );
 
-        if (stats.opts.webpackHotModuleReloading) {
-          addWebpackHotModuleAccept(path);
+        const { webpackHotModuleReloading } = stats.opts;
+
+        if (webpackHotModuleReloading === 'commonjs') {
+          addCommonJsWebpackHotModuleAccept(path);
+        } else if (webpackHotModuleReloading) {
+          addEsmWebpackHotModuleAccept(path);
         }
 
         if (stats.opts.removeImport) {

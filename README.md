@@ -268,8 +268,8 @@ you.
   Defaults `[path]___[name]__[local]___[hash:base64:5]`.
 - `removeImport` - **boolean** - Remove the matching style import.
   This option is used to enable server-side rendering. Defaults **false**.
-- `webpackHotModuleReloading` - **boolean** - Enables hot reloading of CSS
-  in webpack. Defaults **false**.
+- `webpackHotModuleReloading` - **boolean** | `"commonjs"` - Enables injection
+  of [Hot Module Reloading] code.
 - `handleMissingStyleName` - **string** - Determines what should be done for
   undefined CSS modules (using a `styleName` for which there is no CSS module
   defined). Valid values: `"throw"`, `"warn"`, `"ignore"`. Setting this option
@@ -336,6 +336,26 @@ two steps:
         "postcss-nested"
       ]
     ```
+
+### Hot Module Reloading
+If you don't know what is Hot Module Reloading (HMR), refer to the
+[Webpack documentation](https://webpack.js.org/concepts/hot-module-replacement).
+
+If you use HMR in your development setup (you probably should), depending on
+your particular configuration you might need to enable `webpackHotModuleReloading`
+option of this plugin, or you may need to leave it disabled (default), as other
+loaders / plugins in your Webpack pipeline for CSS may already inject required
+HMR code.
+
+In case you decide to enable it in this plugin, `webpackHotModuleReloading`
+option may be set equal:
+- **true** - this plugin will inject HMR accept code for each imported CSS
+  module, using `import.meta.webpackHot` (ESM) syntax
+  ([see for details](https://webpack.js.org/api/hot-module-replacement)).
+- `commonjs` string - this plugin will inject HMR accept code using
+  the legacy `module.hot` syntax.
+
+The default value is **false** - this plugin does not inject HMR accept code.
 
 ### transform
 ```
@@ -444,6 +464,7 @@ this, consider to spread the word to encourage more users to move to this fork.
 [React]: https://reactjs.org
 [Webpack]: https://webpack.js.org
 
+[Hot Module Reloading]: #hot-module-reloading
 [FiletypesConfiguration]: #filetypesconfiguration
 [GenerateScopedNameConfiguration]: #generatescopednameconfiguration
 [Configurate syntax loaders]: #configurate-syntax-loaders

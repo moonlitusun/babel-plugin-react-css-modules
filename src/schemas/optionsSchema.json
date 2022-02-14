@@ -52,7 +52,11 @@
       "type": "boolean"
     },
     "webpackHotModuleReloading": {
-      "type": "boolean"
+      "oneOf": [{
+        "type": "boolean"
+      }, {
+        "enum": ["commonjs"]
+      }]
     },
     "handleMissingStyleName": {
       "enum": ["throw", "warn", "ignore"]

@@ -266,8 +266,11 @@ you.
   `styleName` to `className` conversion algorithm. For details see
   [Generating scoped names](https://github.com/css-modules/postcss-modules#generating-scoped-names).
   Defaults `[path]___[name]__[local]___[hash:base64:5]`.
-- `removeImport` - **boolean** - Remove the matching style import.
-  This option is used to enable server-side rendering. Defaults **false**.
+
+- `replaceImport` - **boolean** - Replaces / removes stylesheet imports for
+  server-side rendering purposes. [See details below](#server-side-rendering).
+  Defaults **false**.
+
 - `webpackHotModuleReloading` - **boolean** | `"commonjs"` - Enables injection
   of [Hot Module Reloading] code.
 - `handleMissingStyleName` - **string** - Determines what should be done for
@@ -284,6 +287,9 @@ you.
   in place of the original CSS.
 - `autoResolveMultipleImports` - **boolean** - Allows multiple anonymous imports if
   `styleName` is only in one of them. Defaults **true**.
+
+### Deprecated Plugin Options
+- ~~`removeImport` - **boolean**~~ - Use `replaceImport` option instead.
 
 ### Configurate syntax loaders
 
@@ -358,8 +364,8 @@ option may be set equal:
 The default value is **false** - this plugin does not inject HMR accept code.
 
 ### transform
-```
-transform(cssSource, cssSourceFilePath, pluginOptions): string
+```js
+function transform(cssSource, cssSourceFilePath, pluginOptions): string
 ```
 The transform function, if provided as the `transform` option of this plugin,
 will be called for each loaded CSS source with three arguments:
@@ -386,6 +392,29 @@ The default `styleName` -> `className` transformation **will not** be affected
 by an `attributeNames` value without a `styleName` key. Of course you can use
 `{ "styleName": "somethingOther" }` to change it, or use `{ "styleName": null }`
 to disable it.
+
+### Server-Side Rendering
+If `replaceImport` flag is set, this plugin will remove or replace original
+stylesheet imports, which is needed for server-side rendering:
+
+```js
+// Anonymous imports, like the following, are removed from the code.
+import '/path/to/styles.css';
+
+// Default imports are replaced with mappings between original and generated
+// class names.
+
+// Original import:
+import styles from '/path/to/styles.css';
+
+// Replaced by:
+const styles = {
+  originalClassName: 'generatedClassName',
+  // etc.
+}
+
+// Other kinds of imports are not supported yet.
+```
 
 ## Under the hood
 

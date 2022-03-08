@@ -222,16 +222,16 @@ export default ({
           throw new Error('Unexpected use case.');
         }
 
-        filenameMap[filename]
-          .styleModuleImportMap[styleImportName] = requireCssModule(
-            targetResourcePath,
-            {
-              context: stats.opts.context,
-              filetypes: stats.opts.filetypes || {},
-              generateScopedName: stats.opts.generateScopedName,
-              transform: stats.opts.transform,
-            },
-          );
+        const styleModuleImportMap = requireCssModule(
+          targetResourcePath,
+          {
+            context: stats.opts.context,
+            filetypes: stats.opts.filetypes || {},
+            generateScopedName: stats.opts.generateScopedName,
+            transform: stats.opts.transform,
+          },
+        );
+        filenameMap[filename].styleModuleImportMap[styleImportName] = styleModuleImportMap;
 
         const { webpackHotModuleReloading } = stats.opts;
 
@@ -241,7 +241,27 @@ export default ({
           addEsmWebpackHotModuleAccept(path);
         }
 
-        if (stats.opts.removeImport) {
+        if (stats.opts.replaceImport) {
+          const { specifiers } = path.node;
+          if (specifiers.length) {
+            if (
+              specifiers.length > 1
+              || specifiers[0].type !== 'ImportDefaultSpecifier'
+            ) throw Error('Unsupported kind of import');
+
+            path.replaceWith(
+              types.variableDeclaration(
+                'const',
+                [
+                  types.variableDeclarator(
+                    types.identifier(specifiers[0].local.name),
+                    createObjectExpression(types, styleModuleImportMap),
+                  ),
+                ],
+              ),
+            );
+          } else path.remove();
+        } else if (stats.opts.removeImport) {
           path.remove();
         }
       },

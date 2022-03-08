@@ -2,7 +2,7 @@
  * getLocalIdent() function taken from css-loader@5.2.4
  */
 
-import path from 'path';
+import { defaultGetLocalIdent } from 'css-loader';
 import TemplatedPathPlugin from 'webpack/lib/TemplatedPathPlugin';
 import createHash from 'webpack/lib/util/createHash';
 
@@ -50,8 +50,6 @@ let getPath;
 const filenameReservedRegex = /["*/:<>?\\|]/gu;
 // eslint-disable-next-line no-control-regex
 const reControlChars = /[\u0000-\u001F\u0080-\u009F]/gu;
-
-const normalizePath = (file) => (path.sep === '\\' ? file.replace(/\\/gu, '/') : file);
 
 const regexSingleEscape = /[ -,./:-@[\]^`{-~]/u;
 const regexExcessiveSpaces = /(^|\\+)?(\\[\dA-F]{1,6}) (?![\d A-Fa-f])/gu;
@@ -192,112 +190,18 @@ export default function getLocalIdent(
   loaderContext,
   localIdentName,
   localName,
-  options,
+  { clazz, ...options },
 ) {
-  const { context, hashSalt, hashStrategy } = options;
-  const { resourcePath } = loaderContext;
-  const relativeResourcePath = normalizePath(
-    path.relative(context, resourcePath),
-  );
-
-  const content = hashStrategy === 'minimal-subset'
-    && /\[local\]/.test(localIdentName)
-    ? relativeResourcePath : `${relativeResourcePath}\x00${localName}`;
-
-  let { hashFunction, hashDigest, hashDigestLength } = options;
-  const matches = localIdentName.match(
-    /\[(?:([^:\]]+):)?(?:(hash|contenthash|fullhash))(?::([a-z]+\d*))?(?::(\d+))?\]/iu,
-  );
-
-  if (matches) {
-    const hashName = matches[2] || hashFunction;
-
-    hashFunction = matches[1] || hashFunction;
-    hashDigest = matches[3] || hashDigest;
-    hashDigestLength = matches[4] || hashDigestLength;
-
-    // `hash` and `contenthash` are same in `loader-utils` context
-    // let's keep `hash` for backward compatibility
-
-    // eslint-disable-next-line no-param-reassign
-    localIdentName = localIdentName.replace(
-      /\[(?:([^:\]]+):)?(?:hash|contenthash|fullhash)(?::([a-z]+\d*))?(?::(\d+))?\]/giu,
-      () => (hashName === 'fullhash' ? '[fullhash]' : '[contenthash]'),
-    );
-  }
-
-  let localIdentHash = '';
-
-  for (let tier = 0; localIdentHash.length < hashDigestLength; tier++) {
-    const hash = createHash(hashFunction);
-
-    if (hashSalt) {
-      hash.update(hashSalt);
-    }
-
-    const tierSalt = Buffer.allocUnsafe(4);
-
-    tierSalt.writeUInt32LE(tier);
-
-    hash.update(tierSalt);
-
-    // TODO: bug in webpack with unicode characters with strings
-    hash.update(Buffer.from(content, 'utf8'));
-
-    localIdentHash = (localIdentHash + hash.digest(hashDigest))
-      // Remove all leading digits
-      .replace(/^\d+/u, '')
-      // Replace all slashes with underscores (same as in base64url)
-      .replace(/\//gu, '_')
-      // Remove everything that is not an alphanumeric or underscore
-      .replace(/\W+/gu, '')
-      .slice(0, hashDigestLength);
-  }
-
-  // TODO need improve on webpack side, we should allow to pass
-  // hash/contentHash without chunk property, also `data` for `getPath` should
-  // be looks good without chunk property
-  const ext = path.extname(resourcePath);
-  const base = path.basename(resourcePath);
-  const name = base.slice(0, base.length - ext.length);
-  const data = {
-    chunk: {
-      contentHash: localIdentHash,
-      hash: localIdentHash,
-      name,
-    },
-    contentHash: localIdentHash,
-    filename: path.relative(context, resourcePath),
-  };
-
-  let ident = getPath(localIdentName, data).replace(/\[local\]/giu, localName);
-
-  if (/\[folder\]/giu.test(ident)) {
-    const dirname = path.dirname(resourcePath);
-    let directory = normalizePath(
-      path.relative(context, `${dirname + path.sep}_`),
-    );
-
-    directory = directory.slice();
-
-    let folder = '';
-
-    if (directory.length > 1) {
-      folder = path.basename(directory);
-    }
-
-    ident = ident.replace(/\[folder\]/giu, () => folder);
-  }
-
-  if (options.regExp) {
-    const match = resourcePath.match(options.regExp);
-
-    if (match) {
-      match.entries().forEach(([idx, matched]) => {
-        ident = ident.replace(new RegExp(`\\[${idx}\\]`, 'igu'), matched);
-      });
-    }
-  }
-
-  return escapeLocalIdent(ident);
+  return escapeLocalIdent(
+    defaultGetLocalIdent(
+      {
+        _compilation: { getPath },
+        utils: { createHash },
+        ...loaderContext,
+      },
+      localIdentName,
+      localName,
+      options,
+    ),
+  ).replace(/\\\[local\\]/gi, clazz);
 }

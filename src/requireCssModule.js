@@ -138,6 +138,7 @@ export default (cssSourceFilePath: string, options: OptionsType): StyleModuleMap
       options.generateScopedName || optionsDefaults.generateScopedName,
       unescape(clazz),
       {
+        clazz,
         context: options.context || process.cwd(),
 
         // TODO: These options should match their counterparts in Webpack

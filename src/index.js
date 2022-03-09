@@ -26,29 +26,28 @@ ajvKeywords(ajv);
 
 const validate = ajv.compile(optionsSchema);
 
-const getTargetResourcePath = (path: *, stats: *) => {
+const getTargetResourcePath = (importedPath: string, stats: *) => {
   const targetFileDirectoryPath = dirname(stats.file.opts.filename);
 
-  if (path.node.source.value.startsWith('.')) {
-    return resolve(targetFileDirectoryPath, path.node.source.value);
+  if (importedPath.startsWith('.')) {
+    return resolve(targetFileDirectoryPath, importedPath);
   }
 
-  return require.resolve(path.node.source.value);
+  return require.resolve(importedPath);
 };
 
 const isFilenameExcluded = (filename, exclude) => filename.match(new RegExp(exclude, 'u'));
 
-const notForPlugin = (path: *, stats: *) => {
-  const extension = path.node.source.value.lastIndexOf('.') > -1
-    ? path.node.source.value.slice(path.node.source.value.lastIndexOf('.'))
-    : null;
+const notForPlugin = (importedPath: string, stats: *) => {
+  const extension = importedPath.lastIndexOf('.') > -1
+    ? importedPath.slice(importedPath.lastIndexOf('.')) : null;
 
   if (extension !== '.css') {
     const { filetypes } = stats.opts;
     if (!filetypes || !filetypes[extension]) return true;
   }
 
-  const filename = getTargetResourcePath(path, stats);
+  const filename = getTargetResourcePath(importedPath, stats);
 
   if (stats.opts.exclude && isFilenameExcluded(filename, stats.opts.exclude)) {
     return true;
@@ -62,22 +61,23 @@ export default ({
 }: {|
   types: typeof BabelTypes,
 |}): { ... } => {
-  const filenameMap = {};
+  const styleMapsForFileByName = {};
+  const styleMapsForFileByPath = {};
 
   let skip = false;
 
   const setupFileForRuntimeResolution = (path, filename) => {
     const programPath = path.findParent((parentPath) => parentPath.isProgram());
 
-    filenameMap[filename].importedHelperIndentifier = programPath.scope.generateUidIdentifier('getClassName');
-    filenameMap[filename].styleModuleImportMapIdentifier = programPath.scope.generateUidIdentifier('styleModuleImportMap');
+    styleMapsForFileByName[filename].importedHelperIndentifier = programPath.scope.generateUidIdentifier('getClassName');
+    styleMapsForFileByName[filename].styleModuleImportMapIdentifier = programPath.scope.generateUidIdentifier('styleModuleImportMap');
 
     programPath.unshiftContainer(
       'body',
       types.importDeclaration(
         [
           types.importDefaultSpecifier(
-            filenameMap[filename].importedHelperIndentifier,
+            styleMapsForFileByName[filename].importedHelperIndentifier,
           ),
         ],
         types.stringLiteral('@dr.pogodin/babel-plugin-react-css-modules/dist/browser/getClassName'),
@@ -92,9 +92,9 @@ export default ({
         [
           types.variableDeclarator(
             types.cloneNode(
-              filenameMap[filename].styleModuleImportMapIdentifier,
+              styleMapsForFileByName[filename].styleModuleImportMapIdentifier,
             ),
-            createObjectExpression(types, filenameMap[filename].styleModuleImportMap),
+            createObjectExpression(types, styleMapsForFileByName[filename].styleModuleImportMap),
           ),
         ],
       ),
@@ -106,7 +106,7 @@ export default ({
    * i.e. using module.hot.
    * @param {object} path
    */
-  const addCommonJsWebpackHotModuleAccept = (path) => {
+  const addCommonJsWebpackHotModuleAccept = (path, importedPath) => {
     const test = types.memberExpression(types.identifier('module'), types.identifier('hot'));
     const consequent = types.blockStatement([
       types.expressionStatement(
@@ -116,12 +116,12 @@ export default ({
             types.identifier('accept'),
           ),
           [
-            types.stringLiteral(path.node.source.value),
+            types.stringLiteral(importedPath),
             types.functionExpression(null, [], types.blockStatement([
               types.expressionStatement(
                 types.callExpression(
                   types.identifier('require'),
-                  [types.stringLiteral(path.node.source.value)],
+                  [types.stringLiteral(importedPath)],
                 ),
               ),
             ])),
@@ -148,7 +148,7 @@ export default ({
    * i.e. using import.meta.webpackHot
    * @param {object} path
    */
-  const addEsmWebpackHotModuleAccept = (path) => {
+  const addEsmWebpackHotModuleAccept = (path, importedPath) => {
     const test = types.memberExpression(
       types.memberExpression(
         types.identifier('import'),
@@ -170,12 +170,12 @@ export default ({
             types.identifier('accept'),
           ),
           [
-            types.stringLiteral(path.node.source.value),
+            types.stringLiteral(importedPath),
             types.functionExpression(null, [], types.blockStatement([
               types.expressionStatement(
                 types.callExpression(
                   types.identifier('require'),
-                  [types.stringLiteral(path.node.source.value)],
+                  [types.stringLiteral(importedPath)],
                 ),
               ),
             ])),
@@ -197,22 +197,108 @@ export default ({
     }
   };
 
+  const loadStyleMap = (
+    name: string,
+    importedPath: string,
+    resolvedPath: string,
+    path: *,
+    stats: *,
+  ) => {
+    const {
+      file: { opts: { filename } },
+      opts: {
+        context,
+        filetypes = {},
+        generateScopedName,
+        transform,
+      },
+    } = stats;
+
+    const mapsByName = styleMapsForFileByName[filename].styleModuleImportMap;
+    let styleMap = mapsByName[name];
+
+    // In case it was loaded under a different name before.
+    if (!styleMap) {
+      styleMap = styleMapsForFileByPath[filename][importedPath];
+      mapsByName[name] = styleMap;
+    }
+
+    // Loading a map for the first time.
+    if (!styleMap) {
+      styleMap = requireCssModule(resolvedPath, {
+        context,
+        filetypes,
+        generateScopedName,
+        transform,
+      });
+      mapsByName[name] = styleMap;
+      styleMapsForFileByPath[filename][importedPath] = styleMap;
+
+      const { replaceImport, webpackHotModuleReloading } = stats.opts;
+
+      // replaceImport flag means we target server-side environment,
+      // thus client-side Webpack's HMR code should not be injected.
+      if (!replaceImport) {
+        if (webpackHotModuleReloading === 'commonjs') {
+          addCommonJsWebpackHotModuleAccept(path, importedPath);
+        } else if (webpackHotModuleReloading) {
+          addEsmWebpackHotModuleAccept(path, importedPath);
+        }
+      }
+    }
+
+    return styleMap;
+  };
+
   return {
     inherits: babelPluginJsxSyntax,
     visitor: {
-      ImportDeclaration(path: *, stats: *): void {
-        if (skip || notForPlugin(path, stats)) {
-          return;
-        }
+      // const styles = require('./styles.css');
+      CallExpression(path: *, stats: *): void {
+        const { callee: { name: calleeName }, arguments: args } = path.node;
+        if (skip || calleeName !== 'require' || !args.length
+          || !types.isStringLiteral(args[0])) return;
 
-        const { filename } = stats.file.opts;
-        const targetResourcePath = getTargetResourcePath(path, stats);
+        const importedPath = args[0].value;
+        if (notForPlugin(importedPath, stats)) return;
+
+        const targetResourcePath = getTargetResourcePath(importedPath, stats);
+
+        const isAssigned = path.parentPath.type === 'VariableDeclarator';
+        const styleImportName: string = isAssigned
+          ? path.parentPath.node.id.name : importedPath;
+
+        const styleMap = loadStyleMap(
+          styleImportName,
+          importedPath,
+          targetResourcePath,
+          path,
+          stats,
+        );
+
+        if (stats.opts.replaceImport) {
+          if (isAssigned) {
+            path.replaceWith(
+              createObjectExpression(types, styleMap),
+            );
+          } else path.remove();
+        } else if (stats.opts.removeImport) {
+          path.remove();
+        }
+      },
+
+      // import styles from './style.css';
+      ImportDeclaration(path: *, stats: *): void {
+        const importedPath = path.node.source.value;
+        if (skip || notForPlugin(importedPath, stats)) return;
+
+        const targetResourcePath = getTargetResourcePath(importedPath, stats);
 
         let styleImportName: string;
 
         if (path.node.specifiers.length === 0) {
           // use imported file path as import name
-          styleImportName = path.node.source.value;
+          styleImportName = importedPath;
         } else if (path.node.specifiers.length === 1) {
           styleImportName = path.node.specifiers[0].local.name;
         } else {
@@ -222,24 +308,13 @@ export default ({
           throw new Error('Unexpected use case.');
         }
 
-        const styleModuleImportMap = requireCssModule(
+        const styleMap = loadStyleMap(
+          styleImportName,
+          importedPath,
           targetResourcePath,
-          {
-            context: stats.opts.context,
-            filetypes: stats.opts.filetypes || {},
-            generateScopedName: stats.opts.generateScopedName,
-            transform: stats.opts.transform,
-          },
+          path,
+          stats,
         );
-        filenameMap[filename].styleModuleImportMap[styleImportName] = styleModuleImportMap;
-
-        const { webpackHotModuleReloading } = stats.opts;
-
-        if (webpackHotModuleReloading === 'commonjs') {
-          addCommonJsWebpackHotModuleAccept(path);
-        } else if (webpackHotModuleReloading) {
-          addEsmWebpackHotModuleAccept(path);
-        }
 
         if (stats.opts.replaceImport) {
           const { specifiers } = path.node;
@@ -255,7 +330,7 @@ export default ({
                 [
                   types.variableDeclarator(
                     types.identifier(specifiers[0].local.name),
-                    createObjectExpression(types, styleModuleImportMap),
+                    createObjectExpression(types, styleMap),
                   ),
                 ],
               ),
@@ -265,6 +340,7 @@ export default ({
           path.remove();
         }
       },
+
       JSXElement(path: *, stats: *): void {
         if (skip) {
           return;
@@ -307,13 +383,13 @@ export default ({
           if (types.isStringLiteral(attribute.value)) {
             resolveStringLiteral(
               path,
-              filenameMap[filename].styleModuleImportMap,
+              styleMapsForFileByName[filename].styleModuleImportMap,
               attribute,
               destinationName,
               options,
             );
           } else if (types.isJSXExpressionContainer(attribute.value)) {
-            if (!filenameMap[filename].importedHelperIndentifier) {
+            if (!styleMapsForFileByName[filename].importedHelperIndentifier) {
               setupFileForRuntimeResolution(path, filename);
             }
 
@@ -322,8 +398,8 @@ export default ({
               path,
               attribute,
               destinationName,
-              filenameMap[filename].importedHelperIndentifier,
-              types.cloneNode(filenameMap[filename].styleModuleImportMapIdentifier),
+              styleMapsForFileByName[filename].importedHelperIndentifier,
+              types.cloneNode(styleMapsForFileByName[filename].styleModuleImportMapIdentifier),
               options,
             );
           }
@@ -337,6 +413,7 @@ export default ({
           }
         });
       },
+
       Program(path: *, stats: *): void {
         if (!validate(stats.opts)) {
           // eslint-disable-next-line no-console
@@ -347,9 +424,10 @@ export default ({
 
         const { filename } = stats.file.opts;
 
-        filenameMap[filename] = {
+        styleMapsForFileByName[filename] = {
           styleModuleImportMap: {},
         };
+        styleMapsForFileByPath[filename] = {};
 
         if (stats.opts.skip && !attributeNameExists(path, stats)) {
           skip = true;

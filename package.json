@@ -1,5 +1,5 @@
 {
-  "version": "6.7.0",
+  "version": "6.7.1",
   "dependencies": {
     "@babel/plugin-syntax-jsx": "^7.16.7",
     "@babel/types": "^7.17.0",

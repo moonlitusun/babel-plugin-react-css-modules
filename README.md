@@ -5,9 +5,13 @@
 ![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/babel-plugin-react-css-modules.svg)
 ![NPM Downloads](https://img.shields.io/npm/dm/@dr.pogodin/babel-plugin-react-css-modules.svg)
 
-This [Babel] plugin for [React] transforms `styleName` attribute of
-JSX components into `className` using compile-time [CSS Modules] resolution,
-allowing for a cleaner use of CSS Modules in React.
+[Babel] plugin for advanced [CSS modules] support in [React]:
+
+- It transforms `styleName` attribute of JSX components into `className` using
+  compile-time CSS module resolution, allowing for a cleaner use of CSS modules
+  in React.
+- For server-side rendering (SSR) scenarious it can replace named stylesheet
+  imports by classname mapping objects, and remove anonymous stylesheet imports.
 
 ## Content
 
@@ -130,6 +134,60 @@ In the case when the exact style value is not known at the compile time, like in
 this example, the plugin will inject necessary code to correctly resolve the
 `styleName` at runtime (which is somewhat less performant, but otherwise works
 fine).
+
+**SSR scenario**
+
+Consider such component, which uses a named stylesheet import in order to use it
+in some other ways, beside simple styling, _e.g._ to also display the classname
+mapping:
+```jsx
+import S from './style.css';
+
+export default function Component() {
+  return (
+    <div styleName="container">
+      {JSON.stringify(S)}
+    </div>
+  )
+}
+```
+
+While by default this plugin transforms it into (leaving it to the Webpack's
+**css-loader** to handle `./style.scss` import for the actual CSS bundling,
+and leaving a correct JS in place of it):
+```jsx
+import S from './style.css';
+
+export default function Component() {
+  return (
+    <div className="12345">
+      {JSON.stringify(S)}
+    </div>
+  )
+}
+```
+
+For server-side environment, if you don't compile server-side code with Webpack,
+you'll need to replace `./style.css` with valid JS code. That is exactly what
+this plugin does with `replaceImport` option enabled, it outputs:
+```jsx
+const S = {
+  container: '12345',
+  // Other stylesheet keys, if any.
+};
+
+export default function Component() {
+  return (
+    <div className="12345">
+      {JSON.stringify(S)}
+    </div>
+  )
+}
+```
+
+**CommonJS require() support**
+
+The plugin works the same with `require('./style.css')` CSS imports.
 
 ## Installation
 
@@ -472,7 +530,7 @@ this, consider to spread the word to encourage more users to move to this fork.
 
 | `css-loader` versions   | this plugin versions    |
 | ----------------------- | ----------------------- |
-| `6.7.1` (latest)        | `6.7.0` - `6.8.0` (latest)        |
+| `6.7.1` (latest)        | `6.7.0` - `6.8.1` (latest)        |
 | `6.5.0` &div; `6.7.0`   | `6.5.1` &div; `6.6.1`   |
 | `6.4.0`                 | `6.4.0` &div; `6.4.1`   |
 | `6.0.0` &div; `6.3.0`   | `6.2.1` &div; `6.3.1`   |
@@ -489,7 +547,7 @@ this, consider to spread the word to encourage more users to move to this fork.
 
 [Babel]: https://babeljs.io
 [birdofpreyru]: https://github.com/birdofpreyru
-[CSS Modules]: https://github.com/css-modules/css-modules
+[CSS modules]: https://github.com/css-modules/css-modules
 [Create React App]: https://create-react-app.dev
 [React]: https://reactjs.org
 [Webpack]: https://webpack.js.org

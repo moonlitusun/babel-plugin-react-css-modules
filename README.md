@@ -1,9 +1,8 @@
 # Babel Plugin: React CSS Modules
 
-![Master Build Status](https://img.shields.io/circleci/project/github/birdofpreyru/babel-plugin-react-css-modules/master.svg?label=master)
-![Dev Build Status](https://img.shields.io/circleci/project/github/birdofpreyru/babel-plugin-react-css-modules/devel.svg?label=devel)
-![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/babel-plugin-react-css-modules.svg)
-![NPM Downloads](https://img.shields.io/npm/dm/@dr.pogodin/babel-plugin-react-css-modules.svg)
+[![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/babel-plugin-react-css-modules.svg)](https://www.npmjs.com/package/@dr.pogodin/babel-plugin-react-css-modules)
+[![NPM Downloads](https://img.shields.io/npm/dm/@dr.pogodin/babel-plugin-react-css-modules.svg)](https://www.npmjs.com/package/@dr.pogodin/babel-plugin-react-css-modules)
+[![GitHub Repo stars](https://img.shields.io/github/stars/birdofpreyru/babel-plugin-react-css-modules?style=social)](https://github.com/birdofpreyru/babel-plugin-react-css-modules)
 
 [Babel] plugin for advanced [CSS modules] support in [React]:
 
@@ -530,7 +529,7 @@ this, consider to spread the word to encourage more users to move to this fork.
 
 | `css-loader` versions   | this plugin versions    |
 | ----------------------- | ----------------------- |
-| `6.7.1` (latest)        | `6.7.0` - `6.8.1` (latest)        |
+| `6.7.1` (latest)        | `6.7.0` - `6.8.2` (latest)        |
 | `6.5.0` &div; `6.7.0`   | `6.5.1` &div; `6.6.1`   |
 | `6.4.0`                 | `6.4.0` &div; `6.4.1`   |
 | `6.0.0` &div; `6.3.0`   | `6.2.1` &div; `6.3.1`   |

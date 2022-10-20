@@ -1,11 +1,8 @@
 "use strict";
 
 var _getClassName2 = _interopRequireDefault(require("@dr.pogodin/babel-plugin-react-css-modules/dist/browser/getClassName"));
-
 require("./bar.css");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 const _styleModuleImportMap = {
   "./bar.css": {
     "a": "bar__a"

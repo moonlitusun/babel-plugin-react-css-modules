@@ -36,7 +36,7 @@ const getTargetResourcePath = (importedPath: string, stats: *) => {
   return require.resolve(importedPath);
 };
 
-const isFilenameExcluded = (filename, exclude) => filename.match(new RegExp(exclude, 'u'));
+const isFilenameExcluded = (filename: string, exclude: string) => filename.match(new RegExp(exclude, 'u'));
 
 const notForPlugin = (importedPath: string, stats: *) => {
   const extension = importedPath.lastIndexOf('.') > -1
@@ -66,7 +66,7 @@ export default ({
 
   let skip = false;
 
-  const setupFileForRuntimeResolution = (path, filename) => {
+  const setupFileForRuntimeResolution = (path: *, filename: string) => {
     const programPath = path.findParent((parentPath) => parentPath.isProgram());
 
     styleMapsForFileByName[filename].importedHelperIndentifier = programPath.scope.generateUidIdentifier('getClassName');
@@ -106,7 +106,7 @@ export default ({
    * i.e. using module.hot.
    * @param {object} path
    */
-  const addCommonJsWebpackHotModuleAccept = (path, importedPath) => {
+  const addCommonJsWebpackHotModuleAccept = (path: *, importedPath: string) => {
     const test = types.memberExpression(types.identifier('module'), types.identifier('hot'));
     const consequent = types.blockStatement([
       types.expressionStatement(
@@ -148,7 +148,7 @@ export default ({
    * i.e. using import.meta.webpackHot
    * @param {object} path
    */
-  const addEsmWebpackHotModuleAccept = (path, importedPath) => {
+  const addEsmWebpackHotModuleAccept = (path: *, importedPath: string) => {
     const test = types.memberExpression(
       types.memberExpression(
         types.identifier('import'),

@@ -86,8 +86,8 @@ const getExtraPlugins = (filetypeOptions: ?FiletypeOptionsType): $ReadOnlyArray<
 };
 
 const getTokens = (
-  extraPluginsRunner,
-  runner,
+  extraPluginsRunner: *,
+  runner: *,
   cssSourceFilePath: string,
   filetypeOptions: ?FiletypeOptionsType,
   pluginOptions: OptionsType,
@@ -128,7 +128,7 @@ export default (cssSourceFilePath: string, options: OptionsType): StyleModuleMap
   if (options.generateScopedName && typeof options.generateScopedName === 'function') {
     generateScopedName = options.generateScopedName;
   } else {
-    generateScopedName = (clazz, resourcePath) => getLocalIdent(
+    generateScopedName = (clazz: string, resourcePath: string) => getLocalIdent(
       // TODO: The loader context used by "css-loader" may has additional
       // stuff inside this argument (loader context), allowing for some edge
       // cases (though, presumably not with a typical configurations)

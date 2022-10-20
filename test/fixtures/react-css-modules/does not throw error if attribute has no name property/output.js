@@ -1,7 +1,6 @@
 "use strict";
 
 require("./bar.css");
-
 const props = {
   foo: 'bar'
 };

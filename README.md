@@ -12,6 +12,8 @@
 - For server-side rendering (SSR) scenarious it can replace named stylesheet
   imports by classname mapping objects, and remove anonymous stylesheet imports.
 
+[![Sponsor](.README/sponsor.png)](https://github.com/sponsors/birdofpreyru)
+
 ## Content
 
 - [Usage examples](#usage-examples)
@@ -529,7 +531,7 @@ this, consider to spread the word to encourage more users to move to this fork.
 
 | `css-loader` versions   | this plugin versions    |
 | ----------------------- | ----------------------- |
-| `6.7.1` (latest)        | `6.7.0` - `6.9.0` (latest)        |
+| `6.7.1` (latest)        | `6.7.0` - `6.9.1` (latest)        |
 | `6.5.0` &div; `6.7.0`   | `6.5.1` &div; `6.6.1`   |
 | `6.4.0`                 | `6.4.0` &div; `6.4.1`   |
 | `6.0.0` &div; `6.3.0`   | `6.2.1` &div; `6.3.1`   |

@@ -531,16 +531,16 @@ this, consider to spread the word to encourage more users to move to this fork.
 
 | `css-loader` versions   | this plugin versions    |
 | ----------------------- | ----------------------- |
-| `6.7.1` &div; `6.7.2` (latest) | `6.7.0` - `6.9.2` (latest)        |
-| `6.5.0` &div; `6.7.0`   | `6.5.1` &div; `6.6.1`   |
-| `6.4.0`                 | `6.4.0` &div; `6.4.1`   |
-| `6.0.0` &div; `6.3.0`   | `6.2.1` &div; `6.3.1`   |
-| `5.2.5` &div; `5.2.7`   | `6.1.1`                 |
+| `6.7.1` &ndash; `6.7.2` (latest) | `6.7.0` &ndash; `6.9.2` (latest)        |
+| `6.5.0` &ndash; `6.7.0`   | `6.5.1` &ndash; `6.6.1`   |
+| `6.4.0`                 | `6.4.0` &ndash; `6.4.1`   |
+| `6.0.0` &ndash; `6.3.0`   | `6.2.1` &ndash; `6.3.1`   |
+| `5.2.5` &ndash; `5.2.7`   | `6.1.1`                 |
 | `5.2.4`                 | `6.1.0`                 |
-| `5.1.3` &div; `5.2.3`   | `6.0.11`/`6.1.0`<sup>(1)</sup> |
-| `5.0.0` &div; `5.1.2`   | `6.0.7` &div; `6.0.11`  |
-| `4.2.0` &div; `4.3.0`   | `6.0.3` &div; `6.0.6`   |
-| `<= 3.6.0`              | [original plugin](https://www.npmjs.com/package/babel-plugin-react-css-modules)  |
+| `5.1.3` &ndash; `5.2.3`   | `6.0.11` / `6.1.0`<sup>(1)</sup> |
+| `5.0.0` &ndash; `5.1.2`   | `6.0.7` &ndash; `6.0.11`  |
+| `4.2.0` &ndash; `4.3.0`   | `6.0.3` &ndash; `6.0.6`   |
+| &le; `3.6.0`              | [original plugin](https://www.npmjs.com/package/babel-plugin-react-css-modules)  |
 
 <sup>1) There might be some corner-case differences in class name transformation between these versions of `css-loader` and this plugin, but most probably they won't break compatibility for most users.</sup>
 

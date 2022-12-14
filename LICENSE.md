@@ -1,7 +1,7 @@
 # BSD-3-Clause
 
-Copyright &copy; 2020 - 2022, Dr. Sergey Pogodin <doc@pogodin.studio> (https://dr.pogodin.studio)
-Copyright &copy; 2016, Gajus Kuizinas (http://gajus.com/)
+_Copyright &copy; 2020&ndash;2023, Dr. Sergey Pogodin <doc@pogodin.studio> (https://dr.pogodin.studio)_ \
+_Copyright &copy; 2016, Gajus Kuizinas (http://gajus.com/)_
 
 All rights reserved.
 

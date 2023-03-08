@@ -122,7 +122,7 @@ const getTokens = (
 
 export default (cssSourceFilePath: string, options: OptionsType): StyleModuleMapType => {
   // eslint-disable-next-line prefer-const
-  let runner;
+  let runner: any;
   let generateScopedName;
 
   if (options.generateScopedName && typeof options.generateScopedName === 'function') {

@@ -6,4 +6,5 @@
 <PROJECT_ROOT>/node_modules/resolve/test
 
 [options]
+exact_by_default=false
 module.ignore_non_literal_requires=true

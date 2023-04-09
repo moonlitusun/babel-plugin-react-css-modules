@@ -3,12 +3,12 @@
 var _getClassName2 = _interopRequireDefault(require("@dr.pogodin/babel-plugin-react-css-modules/dist/browser/getClassName"));
 require("./foo.css");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+// Literal, no merging
 const _styleModuleImportMap = {
   "./foo.css": {
     "a": "foo__a"
   }
 };
-// Literal, no merging
 <div activeClassName="foo__a" />;
 
 // Literal, merging with literal

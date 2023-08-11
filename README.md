@@ -1,8 +1,11 @@
 # Babel Plugin: React CSS Modules
 
 [![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/babel-plugin-react-css-modules.svg)](https://www.npmjs.com/package/@dr.pogodin/babel-plugin-react-css-modules)
-[![NPM Downloads](https://img.shields.io/npm/dm/@dr.pogodin/babel-plugin-react-css-modules.svg)](https://www.npmjs.com/package/@dr.pogodin/babel-plugin-react-css-modules)
+[![NPM monthly downloads](https://img.shields.io/npm/dm/@dr.pogodin/babel-plugin-react-css-modules.svg)](https://www.npmjs.com/package/@dr.pogodin/babel-plugin-react-css-modules)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/birdofpreyru/babel-plugin-react-css-modules/tree/master.svg?style=shield)](https://app.circleci.com/pipelines/github/birdofpreyru/babel-plugin-react-css-modules)
 [![GitHub Repo stars](https://img.shields.io/github/stars/birdofpreyru/babel-plugin-react-css-modules?style=social)](https://github.com/birdofpreyru/babel-plugin-react-css-modules)
+[![Dr. Pogodin Studio](https://raw.githubusercontent.com/birdofpreyru/babel-plugin-react-css-modules/master/.README/logo-dr-pogodin-studio.svg)](https://dr.pogodin.studio/docs/babel-plugin-react-css-modules)
+
 
 [Babel] plugin for advanced [CSS modules] support in [React]:
 
@@ -12,7 +15,7 @@
 - For server-side rendering (SSR) scenarious it can replace named stylesheet
   imports by classname mapping objects, and remove anonymous stylesheet imports.
 
-[![Sponsor](.README/sponsor.png)](https://github.com/sponsors/birdofpreyru)
+[![Sponsor](https://raw.githubusercontent.com/birdofpreyru/babel-plugin-react-css-modules/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
 
 ## Content
 
@@ -531,7 +534,7 @@ this, consider to spread the word to encourage more users to move to this fork.
 
 | `css-loader` versions   | this plugin versions    |
 | ----------------------- | ----------------------- |
-| `6.7.1` &ndash; `6.7.3` (latest) | `6.7.0` &ndash; `6.9.3` (latest)        |
+| `6.7.1` &ndash; `6.8.1` (latest) | `6.7.0` &ndash; `6.10.0` (latest)        |
 | `6.5.0` &ndash; `6.7.0`   | `6.5.1` &ndash; `6.6.1`   |
 | `6.4.0`                 | `6.4.0` &ndash; `6.4.1`   |
 | `6.0.0` &ndash; `6.3.0`   | `6.2.1` &ndash; `6.3.1`   |

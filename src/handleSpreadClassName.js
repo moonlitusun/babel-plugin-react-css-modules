@@ -1,5 +1,7 @@
 // @flow
 
+import { NodePath } from '@babel/core';
+
 import {
   cloneNode,
   Expression,
@@ -11,7 +13,7 @@ import {
 } from '@babel/types';
 
 const handleSpreadClassName = (
-  path: *,
+  path: typeof NodePath,
   destinationName: string,
   classNamesFromSpread: typeof Expression,
 ) => {

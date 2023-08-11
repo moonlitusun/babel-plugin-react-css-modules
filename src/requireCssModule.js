@@ -67,7 +67,7 @@ const getSyntax = (filetypeOptions: FiletypeOptionsType): ?(SyntaxType) => {
   return require(filetypeOptions.syntax);
 };
 
-const getExtraPlugins = (filetypeOptions: ?FiletypeOptionsType): $ReadOnlyArray<*> => {
+const getExtraPlugins = (filetypeOptions: ?FiletypeOptionsType): $ReadOnlyArray<any> => {
   if (!filetypeOptions || !filetypeOptions.plugins) {
     return [];
   }
@@ -86,8 +86,8 @@ const getExtraPlugins = (filetypeOptions: ?FiletypeOptionsType): $ReadOnlyArray<
 };
 
 const getTokens = (
-  extraPluginsRunner: *,
-  runner: *,
+  extraPluginsRunner: any,
+  runner: any,
   cssSourceFilePath: string,
   filetypeOptions: ?FiletypeOptionsType,
   pluginOptions: OptionsType,

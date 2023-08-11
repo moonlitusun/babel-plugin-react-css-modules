@@ -1,5 +1,7 @@
 // @flow
 
+import { NodePath } from '@babel/core';
+
 import {
   cloneNode,
   Expression,
@@ -11,9 +13,10 @@ import {
   identifier,
   isJSXSpreadAttribute,
 } from '@babel/types';
+
 import optionsDefaults from './schemas/optionsDefaults';
 
-const createSpreadMapper = (path: *, stats: *): {
+const createSpreadMapper = (path: typeof NodePath, stats: any): {
   [destinationName: string]: typeof Expression,
   ...
 } => {

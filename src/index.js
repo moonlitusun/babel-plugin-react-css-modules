@@ -4,6 +4,9 @@ import {
   dirname,
   resolve,
 } from 'path';
+
+import { NodePath } from '@babel/core';
+
 import babelPluginJsxSyntax from '@babel/plugin-syntax-jsx';
 import BabelTypes from '@babel/types';
 import Ajv from 'ajv';
@@ -26,7 +29,7 @@ ajvKeywords(ajv);
 
 const validate = ajv.compile(optionsSchema);
 
-const getTargetResourcePath = (importedPath: string, stats: *) => {
+const getTargetResourcePath = (importedPath: string, stats: any) => {
   const targetFileDirectoryPath = dirname(stats.file.opts.filename);
 
   if (importedPath.startsWith('.')) {
@@ -38,7 +41,7 @@ const getTargetResourcePath = (importedPath: string, stats: *) => {
 
 const isFilenameExcluded = (filename: string, exclude: string) => filename.match(new RegExp(exclude, 'u'));
 
-const notForPlugin = (importedPath: string, stats: *) => {
+const notForPlugin = (importedPath: string, stats: any) => {
   const extension = importedPath.lastIndexOf('.') > -1
     ? importedPath.slice(importedPath.lastIndexOf('.')) : null;
 
@@ -66,7 +69,7 @@ export default ({
 
   let skip = false;
 
-  const setupFileForRuntimeResolution = (path: *, filename: string) => {
+  const setupFileForRuntimeResolution = (path: typeof NodePath, filename: string) => {
     const programPath = path.findParent((parentPath) => parentPath.isProgram());
 
     styleMapsForFileByName[filename].importedHelperIndentifier = programPath.scope.generateUidIdentifier('getClassName');
@@ -106,7 +109,7 @@ export default ({
    * i.e. using module.hot.
    * @param {object} path
    */
-  const addCommonJsWebpackHotModuleAccept = (path: *, importedPath: string) => {
+  const addCommonJsWebpackHotModuleAccept = (path: typeof NodePath, importedPath: string) => {
     const test = types.memberExpression(types.identifier('module'), types.identifier('hot'));
     const consequent = types.blockStatement([
       types.expressionStatement(
@@ -148,7 +151,7 @@ export default ({
    * i.e. using import.meta.webpackHot
    * @param {object} path
    */
-  const addEsmWebpackHotModuleAccept = (path: *, importedPath: string) => {
+  const addEsmWebpackHotModuleAccept = (path: typeof NodePath, importedPath: string) => {
     const test = types.memberExpression(
       types.memberExpression(
         types.identifier('import'),
@@ -201,8 +204,8 @@ export default ({
     name: string,
     importedPath: string,
     resolvedPath: string,
-    path: *,
-    stats: *,
+    path: typeof NodePath,
+    stats: any,
   ) => {
     const {
       file: { opts: { filename } },
@@ -254,7 +257,7 @@ export default ({
     inherits: babelPluginJsxSyntax,
     visitor: {
       // const styles = require('./styles.css');
-      CallExpression(path: *, stats: *): void {
+      CallExpression(path: typeof NodePath, stats: any): void {
         const { callee: { name: calleeName }, arguments: args } = path.node;
         if (skip || calleeName !== 'require' || !args.length
           || !types.isStringLiteral(args[0])) return;
@@ -288,7 +291,7 @@ export default ({
       },
 
       // import styles from './style.css';
-      ImportDeclaration(path: *, stats: *): void {
+      ImportDeclaration(path: typeof NodePath, stats: any): void {
         const importedPath = path.node.source.value;
         if (skip || notForPlugin(importedPath, stats)) return;
 
@@ -341,7 +344,7 @@ export default ({
         }
       },
 
-      JSXElement(path: *, stats: *): void {
+      JSXElement(path: typeof NodePath, stats: any): void {
         if (skip) {
           return;
         }
@@ -414,7 +417,7 @@ export default ({
         });
       },
 
-      Program(path: *, stats: *): void {
+      Program(path: typeof NodePath, stats: any): void {
         if (!validate(stats.opts)) {
           // eslint-disable-next-line no-console
           console.error(validate.errors);

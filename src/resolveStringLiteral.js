@@ -1,5 +1,7 @@
 // @flow
 
+import { NodePath } from '@babel/core';
+
 import {
   isJSXExpressionContainer,
   isStringLiteral,
@@ -18,7 +20,7 @@ import type {
  * styleName attribute.
  */
 export default (
-  path: *,
+  path: typeof NodePath,
   styleModuleImportMap: StyleModuleImportMapType,
   sourceAttribute: typeof JSXAttribute,
   destinationName: string,

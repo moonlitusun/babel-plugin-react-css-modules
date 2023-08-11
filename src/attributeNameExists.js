@@ -1,8 +1,10 @@
 // @flow
 
+import { NodePath } from '@babel/core';
+
 import optionsDefaults from './schemas/optionsDefaults';
 
-const attributeNameExists = (programPath: *, stats: *): boolean => {
+const attributeNameExists = (programPath: typeof NodePath, stats: any): boolean => {
   let exists = false;
 
   let { attributeNames } = optionsDefaults;
@@ -12,7 +14,7 @@ const attributeNameExists = (programPath: *, stats: *): boolean => {
   }
 
   programPath.traverse({
-    JSXAttribute(attributePath: *) {
+    JSXAttribute(attributePath: typeof NodePath) {
       if (exists) {
         return;
       }

@@ -21,6 +21,13 @@ import resolveStringLiteral from './resolveStringLiteral';
 import optionsDefaults from './schemas/optionsDefaults';
 import optionsSchema from './schemas/optionsSchema.json';
 
+// When testing the library, we want the same mock path, rather than __dirname,
+// which will be different on each test machine, and thus not good for matching
+// against expected test output fixtures.
+const DIRNAME = process.env.NODE_ENV === 'babel-plugin-react-css-modules-test'
+  ? '/mock/path/to/@dr.pogodin/babel-plugin-react-css-modules/dist'
+  : __dirname;
+
 const ajv = new Ajv({
   $data: true,
 });
@@ -83,7 +90,7 @@ export default ({
             styleMapsForFileByName[filename].importedHelperIndentifier,
           ),
         ],
-        types.stringLiteral(resolve(__dirname, './browser/getClassName')),
+        types.stringLiteral(resolve(DIRNAME, './browser/getClassName')),
       ),
     );
 

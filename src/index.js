@@ -80,7 +80,7 @@ export default ({
             styleMapsForFileByName[filename].importedHelperIndentifier,
           ),
         ],
-        types.stringLiteral('@dr.pogodin/babel-plugin-react-css-modules/dist/browser/getClassName'),
+        types.stringLiteral(resolve(__dirname, './browser/getClassName')),
       ),
     );
 

@@ -1,5 +1,5 @@
 {
-  "version": "6.11.0",
+  "version": "6.11.3",
   "dependencies": {
     "@babel/core": "^7.22.10",
     "@babel/plugin-syntax-jsx": "^7.22.5",
@@ -71,7 +71,7 @@
   ],
   "license": "BSD-3-Clause",
   "main": "dist/index.js",
-  "name": "@dr.pogodin/babel-plugin-react-css-modules",
+  "name": "@dz-web/babel-plugin-react-css-modules",
   "homepage": "https://dr.pogodin.studio/docs/babel-plugin-react-css-modules",
   "repository": "github:birdofpreyru/babel-plugin-react-css-modules",
   "bugs": {

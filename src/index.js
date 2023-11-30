@@ -45,7 +45,9 @@ const notForPlugin = (importedPath: string, stats: any) => {
   const extension = importedPath.lastIndexOf('.') > -1
     ? importedPath.slice(importedPath.lastIndexOf('.')) : null;
 
-  if (extension !== '.css') {
+  // if (extension !== '.css') {
+  // FIXME: 为了配合esboot，这里只支持scss了。
+  if (extension !== '.scss') {
     const { filetypes } = stats.opts;
     if (!filetypes || !filetypes[extension]) return true;
   }

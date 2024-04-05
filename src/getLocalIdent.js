@@ -196,7 +196,13 @@ export default function getLocalIdent(
     defaultGetLocalIdent(
       {
         _compilation: { getPath },
-        utils: { createHash },
+        _compiler: {
+          webpack: {
+            // This polyfill is required because of:
+            // https://github.com/webpack-contrib/css-loader/blob/fd18587c1b6d689e3e3a3cc3e6c9fe52f5080181/src/utils.js#L331
+            util: { createHash },
+          },
+        },
         ...loaderContext,
       },
       localIdentName,

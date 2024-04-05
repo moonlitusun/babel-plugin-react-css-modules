@@ -46,7 +46,7 @@
     "url": "https://github.com/sponsors/birdofpreyru"
   },
   "peerDependencies": {
-    "css-loader": "^7",
+    "css-loader": ">=6",
     "postcss": "^8",
     "webpack": "^5"
   },

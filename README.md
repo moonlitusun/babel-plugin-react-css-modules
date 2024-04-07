@@ -460,22 +460,33 @@ If `replaceImport` flag is set, this plugin will remove or replace original
 stylesheet imports, which is needed for server-side rendering:
 
 ```js
-// Anonymous imports, like the following, are removed from the code.
-import '/path/to/styles.css';
+// Anonymous imports are removed from the code:
+import 'path/to/style.css';
 
-// Default imports are replaced with mappings between original and generated
-// class names.
+// Default and named imports are replaced in the following manner:
 
-// Original import:
-import styles from '/path/to/styles.css';
+// Before:
+import styles, {
+  className,
+  otherClassName as alias,
+} from 'path/to/style.css';
 
-// Replaced by:
+// After:
 const styles = {
-  originalClassName: 'generatedClassName',
-  // etc.
-}
+  className: 'generatedClassName',
+  otherClassName: 'otherGeneratedClassName',
+},
+className = 'generatedClassName',
+alias = 'otherGeneratedClassName';
 
-// Other kinds of imports are not supported yet.
+// Also this kind of import:
+import * as style from 'path/to/style.css';
+
+// is replaced by:
+const style = {
+  className: 'generatedClassName',
+  otherClassName: 'otherGeneratedClassName',
+};
 ```
 
 ## Under the hood

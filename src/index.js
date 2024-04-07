@@ -290,7 +290,11 @@ export default ({
         }
       },
 
+      // All these are supposed to be supported by this visitor:
       // import styles from './style.css';
+      // import * as styles from './style.css';
+      // import { className } from './style.css';
+      // import Style, { className } from './style.css';
       ImportDeclaration(path: typeof NodePath, stats: any): void {
         const importedPath = path.node.source.value;
         if (skip || notForPlugin(importedPath, stats)) return;
@@ -298,18 +302,51 @@ export default ({
         const targetResourcePath = getTargetResourcePath(importedPath, stats);
 
         let styleImportName: string;
+        const { specifiers } = path.node;
 
-        if (path.node.specifiers.length === 0) {
-          // use imported file path as import name
-          styleImportName = importedPath;
-        } else if (path.node.specifiers.length === 1) {
-          styleImportName = path.node.specifiers[0].local.name;
-        } else {
-          // eslint-disable-next-line no-console
-          console.warn('Please report your use case. https://github.com/birdofpreyru/babel-plugin-react-css-modules/issues/new?title=Unexpected+use+case.');
+        const guardStyleImportNameIsNotSet = () => {
+          if (styleImportName) {
+            // If this throws, it means we are missing something in our logic
+            // below, and although it might look functional, it does not produce
+            // determenistic style import selection.
+            console.warn('Please report your use case. https://github.com/birdofpreyru/babel-plugin-react-css-modules/issues/new?title=Unexpected+use+case.');
+            throw Error('Style import name is already selected');
+          }
+        };
 
-          throw new Error('Unexpected use case.');
+        for (let i = 0; i < specifiers.length; ++i) {
+          const specifier = specifiers[i];
+          switch (specifier.type) {
+            // import Style from './style.css';
+            case 'ImportDefaultSpecifier':
+              guardStyleImportNameIsNotSet();
+              styleImportName = specifier.local.name;
+              break;
+
+            // import * as Style from './style.css';
+            case 'ImportNamespaceSpecifier':
+              guardStyleImportNameIsNotSet();
+              styleImportName = specifier.local.name;
+              break;
+
+            // These are individual class names in the named import:
+            // import { className } from './style.css';
+            // we just ignore them, falling back to either the default
+            // import, or the imported path.
+            case 'ImportSpecifier':
+              break;
+
+            default:
+              // eslint-disable-next-line no-console
+              console.warn('Please report your use case. https://github.com/birdofpreyru/babel-plugin-react-css-modules/issues/new?title=Unexpected+use+case.');
+
+              throw new Error('Unexpected use case.');
+          }
         }
+
+        // Fallback for anonymous style import:
+        // import './style.css';
+        if (styleImportName === undefined) styleImportName = importedPath;
 
         const styleMap = loadStyleMap(
           styleImportName,
@@ -320,23 +357,38 @@ export default ({
         );
 
         if (stats.opts.replaceImport) {
-          const { specifiers } = path.node;
-          if (specifiers.length) {
-            if (
-              specifiers.length > 1
-              || specifiers[0].type !== 'ImportDefaultSpecifier'
-            ) throw Error('Unsupported kind of import');
+          const variables = [];
 
-            path.replaceWith(
-              types.variableDeclaration(
-                'const',
-                [
+          for (let i = 0; i < specifiers.length; ++i) {
+            const specifier = specifiers[i];
+            switch (specifier.type) {
+              case 'ImportDefaultSpecifier':
+              case 'ImportNamespaceSpecifier':
+                variables.push(
                   types.variableDeclarator(
-                    types.identifier(specifiers[0].local.name),
+                    types.identifier(specifier.local.name),
                     createObjectExpression(types, styleMap),
                   ),
-                ],
-              ),
+                );
+                break;
+              case 'ImportSpecifier': {
+                const value = styleMap[specifier.imported.name];
+                variables.push(
+                  types.variableDeclarator(
+                    types.identifier(specifier.local.name),
+                    value === undefined ? undefined : types.stringLiteral(value),
+                  ),
+                );
+                break;
+              }
+              default:
+                throw Error('Unsupported kind of import');
+            }
+          }
+
+          if (variables.length) {
+            path.replaceWith(
+              types.variableDeclaration('const', variables),
             );
           } else path.remove();
         } else if (stats.opts.removeImport) {

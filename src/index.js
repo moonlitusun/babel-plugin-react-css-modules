@@ -64,7 +64,7 @@ export default ({
 }: {|
   types: typeof BabelTypes,
 |}): { ... } => {
-  const styleMapsForFileByName = {};
+  const styleMapsForFileByName: { [string]: any } = {};
   const styleMapsForFileByPath = {};
 
   let skip = false;

@@ -12,7 +12,7 @@
 - It transforms `styleName` attribute of JSX components into `className` using
   compile-time CSS module resolution, allowing for a cleaner use of CSS modules
   in React.
-- For server-side rendering (SSR) scenarious it can replace named stylesheet
+- For server-side rendering (SSR) scenarios it can replace named stylesheet
   imports by classname mapping objects, and remove anonymous stylesheet imports.
 
 [![Sponsor](https://raw.githubusercontent.com/birdofpreyru/babel-plugin-react-css-modules/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)

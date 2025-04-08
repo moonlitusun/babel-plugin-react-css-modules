@@ -4,6 +4,10 @@ interface LoaderContextI {
 
 interface OptionsI {}
 
+export function generateScopedNameFactory(
+  localIdentName: string,
+): (localName: string, assetPath: string) => string;
+
 export function getLocalIdent(
   { resourcePath }: LoaderContextI,
   localIdentName: string,

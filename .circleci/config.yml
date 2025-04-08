@@ -18,17 +18,17 @@ jobs:
       *install-and-test
   test-node-20: # Maintenance, EOL 2026.04.30
     docker:
-      - image: cimg/node:20.18
+      - image: cimg/node:20.19
     steps:
       *install-and-test
   test-node-22: # LTS, EOL 2027.04.30
     docker:
-      - image: cimg/node:22.12
+      - image: cimg/node:22.14
     steps:
       *install-and-test
   test-node-23: # Current, EOL 2025.06.01
     docker:
-      - image: cimg/node:23.5
+      - image: cimg/node:23.11
     steps:
       *install-and-test
   release:

@@ -7,7 +7,7 @@ import {
   dirname,
   resolve,
 } from 'path';
-import Parser from '@dr.pogodin/postcss-modules-parser';
+import parser from '@dr.pogodin/postcss-modules-parser';
 import postcss from 'postcss';
 import ExtractImports from 'postcss-modules-extract-imports';
 import LocalByDefault from 'postcss-modules-local-by-default';
@@ -193,7 +193,7 @@ export default (cssSourceFilePath: string, options: OptionsType): StyleModuleMap
     newScopePlugin({
       generateScopedName,
     }),
-    new Parser({
+    parser({
       fetch,
     }),
   ];

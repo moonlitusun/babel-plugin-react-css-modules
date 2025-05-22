@@ -1,10 +1,10 @@
 {
-  "version": "6.13.5",
+  "version": "6.13.6",
   "dependencies": {
-    "@babel/core": "^7.26.10",
-    "@babel/plugin-syntax-jsx": "^7.24.6",
+    "@babel/core": "^7.27.1",
+    "@babel/plugin-syntax-jsx": "^7.27.1",
     "@babel/types": "^7.27.0",
-    "@dr.pogodin/postcss-modules-parser": "^1.2.10",
+    "@dr.pogodin/postcss-modules-parser": "1.2.10",
     "ajv": "^8.17.1",
     "ajv-keywords": "^5.0.0",
     "cssesc": "^3.0.0",
@@ -16,14 +16,14 @@
   },
   "description": "Transforms styleName to className using compile time CSS module resolution.",
   "devDependencies": {
-    "@babel/cli": "^7.27.0",
-    "@babel/eslint-parser": "^7.27.0",
-    "@babel/eslint-plugin": "^7.27.0",
-    "@babel/helper-plugin-test-runner": "^7.24.6",
-    "@babel/plugin-transform-flow-strip-types": "^7.26.5",
-    "@babel/plugin-transform-react-jsx": "^7.25.9",
-    "@babel/preset-env": "^7.26.9",
-    "@babel/register": "^7.25.9",
+    "@babel/cli": "^7.27.2",
+    "@babel/eslint-parser": "^7.27.1",
+    "@babel/eslint-plugin": "^7.27.1",
+    "@babel/helper-plugin-test-runner": "7.24.6",
+    "@babel/plugin-transform-flow-strip-types": "^7.27.1",
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/register": "^7.27.1",
     "babel-jest": "^29.7.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-module-resolver": "^5.0.2",
@@ -40,7 +40,7 @@
     "postcss-less": "^6.0.0",
     "postcss-nested": "^7.0.2",
     "postcss-scss": "^4.0.9",
-    "webpack": "^5.99.7"
+    "webpack": "^5.99.9"
   },
   "funding": {
     "type": "github",

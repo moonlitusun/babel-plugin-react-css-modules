@@ -1,3 +1,5 @@
+/* global module */
+
 module.exports = {
   plugins: [
     [
@@ -5,13 +7,13 @@ module.exports = {
       {
         filetypes: {
           '.less': {
+            plugins: ['postcss-nested'],
             syntax: 'postcss-less',
-            plugins: ['postcss-nested']
-          }
+          },
         },
         generateScopedName: '[local]-[hash:base64:10]',
-        webpackHotModuleReloading: true
-      }
-    ]
-  ]
-}
+        webpackHotModuleReloading: true,
+      },
+    ],
+  ],
+};

@@ -1,3 +1,5 @@
+/* global __dirname */
+
 import fs from 'fs';
 import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -56,7 +58,7 @@ function newWebpackCompiler({ cssLoaderOps, entry }) {
  *  the fixtures folder.
  * @returns {object} Webpack compiler.
  */
-async function runWebpackTest({ babelOutput, cssLoaderOps, entry }) {
+function runWebpackTest({ babelOutput, cssLoaderOps, entry }) {
   return new Promise((resolve, reject) => {
     const compiler = newWebpackCompiler({
       cssLoaderOps,

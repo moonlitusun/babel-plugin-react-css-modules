@@ -65,7 +65,7 @@
   ],
   "license": "BSD-3-Clause",
   "main": "dist/index.js",
-  "name": "@dr.pogodin/babel-plugin-react-css-modules",
+  "name": "@dz-web/babel-plugin-react-css-modules",
   "homepage": "https://dr.pogodin.studio/docs/babel-plugin-react-css-modules",
   "repository": "github:birdofpreyru/babel-plugin-react-css-modules",
   "bugs": {

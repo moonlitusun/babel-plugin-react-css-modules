@@ -1,3 +1,5 @@
+/* global __dirname, module, require */
+
 const path = require('path');
 const { generateScopedNameFactory } = require('../../../../src/utils');
 
@@ -6,7 +8,7 @@ module.exports = {
     [
       path.resolve(__dirname, '../../../../src'), {
         generateScopedName: generateScopedNameFactory(
-          '[path]__[local]__[hash:base64:5]'
+          '[path]__[local]__[hash:base64:5]',
         ),
       },
     ],

@@ -49,8 +49,11 @@ export default (
 
   // Only provide options argument if the options are something other than default
   // This helps save a few bits in the generated user code
-  if (options.handleMissingStyleName !== optionsDefaults.handleMissingStyleName
-    || options.autoResolveMultipleImports !== optionsDefaults.autoResolveMultipleImports) {
+  if (
+    options.handleMissingStyleName !== optionsDefaults.handleMissingStyleName
+    || options.autoResolveMultipleImports
+    !== optionsDefaults.autoResolveMultipleImports
+  ) {
     args.push(createObjectExpression(types, options));
   }
 

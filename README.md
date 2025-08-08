@@ -17,6 +17,13 @@
 
 [![Sponsor](https://raw.githubusercontent.com/birdofpreyru/babel-plugin-react-css-modules/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
 
+### [Contributors](https://github.com/birdofpreyru/babel-plugin-react-css-modules/graphs/contributors)
+[<img width=36 src="https://avatars.githubusercontent.com/u/313363?s=36&v=4" />](https://github.com/praveenpuglia)
+[<img width=36 src="https://avatars.githubusercontent.com/u/2173299?s=36&v=4" />](https://github.com/d-oliveros)
+[<img width=36 src="https://avatars.githubusercontent.com/u/22940470?s=36&v=4" />](https://github.com/moonlitusun)
+[<img width=36 src="https://avatars.githubusercontent.com/u/53335451?s=36&v=4" />](https://github.com/pturchik)
+[<img width=36 src="https://avatars.githubusercontent.com/u/20144632?s=36&v=4" />](https://github.com/birdofpreyru)
+
 ## Content
 
 - [Usage examples](#usage-examples)

@@ -2,13 +2,14 @@
 
 /* global console, process, require */
 
-import {
-  readFileSync,
-} from 'fs';
-import {
-  dirname,
-  resolve,
-} from 'path';
+// TODO: Flow-bin has issues with using "node:" prefix.
+// eslint-disable-next-line import/enforce-node-protocol-usage
+import { readFileSync } from 'fs';
+
+// TODO: Flow-bin has issues with using "node:" prefix.
+// eslint-disable-next-line import/enforce-node-protocol-usage
+import { dirname, resolve } from 'path';
+
 import parser from '@dr.pogodin/postcss-modules-parser';
 import postcss from 'postcss';
 import ExtractImports from 'postcss-modules-extract-imports';

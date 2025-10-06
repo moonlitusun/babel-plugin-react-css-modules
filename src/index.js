@@ -439,7 +439,7 @@ export default ({
         const {
           handleMissingStyleName = optionsDefaults.handleMissingStyleName,
           autoResolveMultipleImports
-          = optionsDefaults.autoResolveMultipleImports,
+            = optionsDefaults.autoResolveMultipleImports,
         } = stats.opts || {};
 
         const spreadMap = createSpreadMapper(path, stats);

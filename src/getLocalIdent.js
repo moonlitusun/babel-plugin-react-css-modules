@@ -64,7 +64,7 @@ const escape = (string) => {
     let value;
 
     // eslint-disable-next-line no-control-regex
-    if (/[\t\n\u000B\f\r]/u.test(character)) {
+    if ((/[\t\n\u000B\f\r]/u).test(character)) {
       const codePoint = character.charCodeAt();
 
       value = `\\${codePoint.toString(16).toUpperCase()} `;
@@ -79,9 +79,9 @@ const escape = (string) => {
 
   const firstChar = string.charAt(0);
 
-  if (/^-[\d-]/u.test(output)) {
+  if ((/^-[\d-]/u).test(output)) {
     output = `\\-${output.slice(1)}`;
-  } else if (/\d/u.test(firstChar)) {
+  } else if ((/\d/u).test(firstChar)) {
     output = `\\3${firstChar} ${output.slice(1)}`;
   }
 
@@ -196,7 +196,18 @@ export default function getLocalIdent(
     defaultGetLocalIdent(
       {
         _compilation: { getPath },
+        _compiler: {
+          webpack: {
+            // This is required for css-loader@7+ compatibility because of:
+            // https://github.com/webpack-contrib/css-loader/blob/fd18587c1b6d689e3e3a3cc3e6c9fe52f5080181/src/utils.js#L331
+            util: { createHash },
+          },
+        },
+
+        // This is presumably required for backward compatibility with older
+        // css-loader versions.
         utils: { createHash },
+
         ...loaderContext,
       },
       localIdentName,

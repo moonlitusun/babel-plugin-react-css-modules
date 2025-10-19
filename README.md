@@ -12,7 +12,7 @@
 - It transforms `styleName` attribute of JSX components into `className` using
   compile-time CSS module resolution, allowing for a cleaner use of CSS modules
   in React.
-- For server-side rendering (SSR) scenarious it can replace named stylesheet
+- For server-side rendering (SSR) scenarios it can replace named stylesheet
   imports by classname mapping objects, and remove anonymous stylesheet imports.
 
 [![Sponsor](https://raw.githubusercontent.com/birdofpreyru/babel-plugin-react-css-modules/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
@@ -460,22 +460,33 @@ If `replaceImport` flag is set, this plugin will remove or replace original
 stylesheet imports, which is needed for server-side rendering:
 
 ```js
-// Anonymous imports, like the following, are removed from the code.
-import '/path/to/styles.css';
+// Anonymous imports are removed from the code:
+import 'path/to/style.css';
 
-// Default imports are replaced with mappings between original and generated
-// class names.
+// Default and named imports are replaced in the following manner:
 
-// Original import:
-import styles from '/path/to/styles.css';
+// Before:
+import styles, {
+  className,
+  otherClassName as alias,
+} from 'path/to/style.css';
 
-// Replaced by:
+// After:
 const styles = {
-  originalClassName: 'generatedClassName',
-  // etc.
-}
+  className: 'generatedClassName',
+  otherClassName: 'otherGeneratedClassName',
+},
+className = 'generatedClassName',
+alias = 'otherGeneratedClassName';
 
-// Other kinds of imports are not supported yet.
+// Also this kind of import:
+import * as style from 'path/to/style.css';
+
+// is replaced by:
+const style = {
+  className: 'generatedClassName',
+  otherClassName: 'otherGeneratedClassName',
+};
 ```
 
 ## Under the hood
@@ -532,15 +543,16 @@ this, consider to spread the word to encourage more users to move to this fork.
 
 ### `css-loader` compatibility
 
-| `css-loader` versions   | this plugin versions    |
-| ----------------------- | ----------------------- |
-| `6.7.1` &ndash; `6.8.1` (latest) | `6.7.0` &ndash; `6.11.0` (latest)        |
+| `css-loader` versions     | this plugin versions      |
+| ------------------------- | ------------------------- |
+| `7.0.0` &ndash; `7.1.2` (latest) | `6.13.0` &ndash; `6.13.5` (latest)         |
+| `6.7.1` &ndash; `6.11.0`  | `6.7.0` &ndash; `6.12.0`  |
 | `6.5.0` &ndash; `6.7.0`   | `6.5.1` &ndash; `6.6.1`   |
-| `6.4.0`                 | `6.4.0` &ndash; `6.4.1`   |
+| `6.4.0`                   | `6.4.0` &ndash; `6.4.1`   |
 | `6.0.0` &ndash; `6.3.0`   | `6.2.1` &ndash; `6.3.1`   |
-| `5.2.5` &ndash; `5.2.7`   | `6.1.1`                 |
-| `5.2.4`                 | `6.1.0`                 |
-| `5.1.3` &ndash; `5.2.3`   | `6.0.11` / `6.1.0`<sup>(1)</sup> |
+| `5.2.5` &ndash; `5.2.7`   | `6.1.1`                   |
+| `5.2.4`                   | `6.1.0`                   |
+| `5.1.3` &ndash; `5.2.3`   | `6.0.11` / `6.1.0`<sup>(1)</sup>  |
 | `5.0.0` &ndash; `5.1.2`   | `6.0.7` &ndash; `6.0.11`  |
 | `4.2.0` &ndash; `4.3.0`   | `6.0.3` &ndash; `6.0.6`   |
 | &le; `3.6.0`              | [original plugin](https://www.npmjs.com/package/babel-plugin-react-css-modules)  |

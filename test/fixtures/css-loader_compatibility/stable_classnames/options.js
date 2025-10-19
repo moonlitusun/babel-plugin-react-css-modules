@@ -1,6 +1,7 @@
 /* global __dirname, module, require */
 
-const path = require('path');
+const path = require('node:path');
+
 const { generateScopedNameFactory } = require('../../../../src/utils');
 
 module.exports = {

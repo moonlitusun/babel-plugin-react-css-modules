@@ -132,7 +132,7 @@ export default (
         = styleModuleImportMap[styleModuleImportMapKeys[0]];
 
       if (!styleModuleMap[styleName]) {
-        return handleError(`Could not resolve the styleName '${styleName}'.`, handleMissingStyleName);
+        return handleError(`Could not resolve the styleName '${styleName}' in ${styleModuleImportMapKeys[0]}.`, handleMissingStyleName);
       }
 
       return styleModuleMap[styleName];

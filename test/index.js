@@ -1,7 +1,8 @@
 /* global __dirname */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import webpack from 'webpack';
 import runner from '@babel/helper-plugin-test-runner';

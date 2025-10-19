@@ -2,10 +2,9 @@
 
 /* global console, require */
 
-import {
-  dirname,
-  resolve,
-} from 'path';
+// TODO: Flow-bin has issues with using "node:" prefix.
+// eslint-disable-next-line import/enforce-node-protocol-usage
+import { dirname, resolve } from 'path';
 
 import { NodePath } from '@babel/core';
 
@@ -443,7 +442,7 @@ export default ({
         const {
           handleMissingStyleName = optionsDefaults.handleMissingStyleName,
           autoResolveMultipleImports
-          = optionsDefaults.autoResolveMultipleImports,
+            = optionsDefaults.autoResolveMultipleImports,
         } = stats.opts || {};
 
         const spreadMap = createSpreadMapper(path, stats);

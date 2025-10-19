@@ -1,6 +1,6 @@
 /* global __dirname, module, require */
 
-const path = require('path');
+const path = require('node:path');
 
 module.exports = {
   plugins: [

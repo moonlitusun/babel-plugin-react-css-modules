@@ -4,7 +4,7 @@
  */
 /* global __dirname, module, require */
 
-const { resolve } = require('path');
+const { resolve } = require('node:path');
 
 module.exports = {
   plugins: [
